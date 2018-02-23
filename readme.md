@@ -13,5 +13,16 @@ Program consists of number of parts:
 1. A query interface which extracts data from DB
 1. Query result processor which outputs results in _some_ format
 
+Project structure
+-----
+
+Standard maven project, building will produce runnable jar file in target/distance-people-search-<version>.jar which 
+    can be run as command-line utility via
+```$bash
+
+java -jar target/distance-people-search-<version>.jar <parameters>
+
+```
+
 
 
