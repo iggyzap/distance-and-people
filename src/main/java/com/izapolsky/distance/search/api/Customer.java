@@ -17,6 +17,6 @@ public class Customer {
     public String name;
     @JsonProperty("user_id")
     public Long userId;
-    public BigDecimal longitude;
-    public BigDecimal latitude;
+    public String longitude;
+    public String latitude;
 }
