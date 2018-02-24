@@ -25,4 +25,10 @@ java -jar target/distance-people-search-<version>.jar <parameters>
 ```
 
 
+Joke
+-------
+
+- What is polar bear ?
+- It's cartesian bear after coordinate system transformation.
+
 

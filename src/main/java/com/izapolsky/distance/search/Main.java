@@ -21,7 +21,7 @@ public class Main {
 
         Main main = new Main(null, new CustomerParserImpl(), null);
         try (InputStream is = openStream(args)) {
-            main.process(is, new Query(), System.out);
+            main.process(is, new Query(null, null, 0), System.out);
         }
 
     }
