@@ -64,7 +64,7 @@ public class H2GisStorageServiceTest {
     }
 
 
-    public Customer getCustomer(String name, Long userId, String latitude, String longitude) {
+    public static Customer getCustomer(String name, Long userId, String latitude, String longitude) {
         Customer customer = new Customer();
         customer.name = name;
         customer.userId = userId;
