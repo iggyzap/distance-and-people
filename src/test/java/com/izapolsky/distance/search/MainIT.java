@@ -10,7 +10,7 @@ import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
-public class MainIntegrationTest {
+public class MainIT {
 
     private PrintStream io = System.out;
     private PrintStream err = System.err;

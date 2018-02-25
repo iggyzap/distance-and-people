@@ -18,10 +18,11 @@ public interface StorageService {
 
     /**
      * Locates matching customers from underlying storage
-     * @param query
+     * @param cleaner An observer that allows for precise control of resource clean-up
+     * @param query parameters to do filtering
      * @return a search result
      */
-    Iterable<Customer> findMatching(Query query);
+    Iterable<Customer> findMatching(ResourceCleaner cleaner, Query query);
 
 
 

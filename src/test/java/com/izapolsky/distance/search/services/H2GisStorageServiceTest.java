@@ -3,6 +3,7 @@ package com.izapolsky.distance.search.services;
 import com.google.common.collect.Iterables;
 import com.izapolsky.distance.search.api.Customer;
 import com.izapolsky.distance.search.api.Query;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,9 +17,16 @@ public class H2GisStorageServiceTest {
 
     private H2GisStorageService toTest;
 
+    private ResourceCleaner cleaner = new ResourceCleaner();
+
     @Before
     public void setUp() {
         toTest = new H2GisStorageService();
+    }
+
+    @After
+    public void tearDown() {
+        cleaner.close();
     }
 
     @Test
@@ -35,7 +43,7 @@ public class H2GisStorageServiceTest {
                 getCustomer("UCD Belfield", 200L, "53.310543", "-6.227837")
         );
         assertEquals(new Long(l.size()), toTest.batchProcessCustomers(l , true));
-        Iterable<Customer> it = toTest.findMatching(new Query("53.316378", "-6.239999", 0.7f));
+        Iterable<Customer> it = toTest.findMatching(cleaner, new Query("53.316378", "-6.239999", 0.7f));
         assertEquals(1, Iterables.size(it));
         assertEquals("Milltown 1", it.iterator().next().name);
     }
@@ -47,9 +55,14 @@ public class H2GisStorageServiceTest {
                 getCustomer("Beech Hill Out", 200L, "53.3114", "-6.233471")
         );
         assertEquals(new Long(l.size()), toTest.batchProcessCustomers(l , true));
-        Iterable<Customer> it = toTest.findMatching(new Query("53.316378", "-6.239999", 0.7f));
+        Iterable<Customer> it = toTest.findMatching(cleaner, new Query("53.316378", "-6.239999", 0.7f));
         assertEquals(1, Iterables.size(it));
         assertEquals("Roebuck In", it.iterator().next().name);
+    }
+
+    @Test (expected = IllegalArgumentException.class)
+    public void testDoesNotAllowNullResourceCleaner() {
+        toTest.findMatching(null, null);
     }
 
     @Test

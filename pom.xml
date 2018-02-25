@@ -65,8 +65,20 @@
             <artifactId>h2gis-ext</artifactId>
             <version>1.3.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.15.4</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>mockito</id>
+            <url>https://dl.bintray.com/mockito/maven/</url>
+        </repository>
+    </repositories>
     <build>
         <plugins>
             <plugin>
@@ -80,6 +92,9 @@
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco-surefire.exec</destFile>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>default-prepare-agent-integration</id>
@@ -89,15 +104,27 @@
                         <phase>pre-integration-test</phase>
                     </execution>
                     <execution>
+                        <id>merge-results</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>merge</goal>
+                        </goals>
+                        <configuration>
+                            <fileSets>
+                                <fileSet implementation="org.apache.maven.shared.model.fileset.FileSet">
+                                    <directory>${project.build.directory}</directory>
+                                    <includes>
+                                        <include>jacoco-*.exec</include>
+                                    </includes>
+                                </fileSet>
+                            </fileSets>
+                            <destFile>${project.build.directory}/jacoco.exec</destFile>
+                        </configuration>
+                    </execution>
+                    <execution>
                         <id>default-report</id>
                         <goals>
                             <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>default-report-integration</id>
-                        <goals>
-                            <goal>report-integration</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -143,6 +170,20 @@
                         <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-failsafe-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>integration-test</goal>
+                            <goal>verify</goal>
                         </goals>
                     </execution>
                 </executions>

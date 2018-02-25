@@ -91,7 +91,9 @@ public class Main {
     public void process(InputStream data, Query query, PrintStream where) {
         Long processed = storageService.batchProcessCustomers(parser.parse(data), true);
         logger.info("Processed {} customer records", processed);
-        customerRenderer.renderTo(storageService.findMatching(query), where);
+        try (ResourceCleaner cleaner = new ResourceCleaner()) {
+            customerRenderer.renderTo(storageService.findMatching(cleaner, query), where);
+        }
 
     }
 

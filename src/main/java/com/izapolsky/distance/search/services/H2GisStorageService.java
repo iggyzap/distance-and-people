@@ -4,11 +4,14 @@ import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Iterables;
 import com.izapolsky.distance.search.api.Customer;
 import com.izapolsky.distance.search.api.Query;
+import org.apache.commons.io.IOUtils;
 import org.h2gis.ext.H2GISExtension;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -130,11 +133,14 @@ public class H2GisStorageService implements StorageService {
     }
 
     protected String getPoint(String latitude, String longitude) {
-        return "POINT (" + longitude + " " +  latitude + ")";
+        return "POINT (" + longitude + " " + latitude + ")";
     }
 
     @Override
-    public Iterable<Customer> findMatching(Query query) {
+    public Iterable<Customer> findMatching(ResourceCleaner re, Query query) {
+        if (re == null) {
+            throw new IllegalArgumentException("Resource cleaner is null");
+        }
         String pointStr = getPoint(query.latitude, query.longitude);
         //here because we are using metric srid we can use meters for sr_dwithin function
         double geographicalDistance = query.distanceKm * 1000;
@@ -159,7 +165,8 @@ public class H2GisStorageService implements StorageService {
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
-
+                        re.registerResource(rs);
+                        re.registerResource(cn);
                     }
 
                     @Override
@@ -174,8 +181,8 @@ public class H2GisStorageService implements StorageService {
                         return endOfData();
                     }
                 };
-    }
 
+    }
 
     private Customer convert(ResultSet rs) throws SQLException {
         Customer c = new Customer();
